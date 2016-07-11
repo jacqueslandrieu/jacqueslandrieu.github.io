@@ -63,7 +63,11 @@ _.typeOf = function(value) {
 * Objectives:
 *   1) If <array> is not an array, return []
 *   2) If <number> is not given or not a number, return just the first element in <array>.
-*   3) Otherwise, return the first <number> items of <array>
+*   3) Otherwise, return the first <number> of items of <array>
+*   ex. return _.first(namesOfLandrieus, 3); --> Mary, Mark, Melanie
+*       *this is kind of weird because if you were supposed to put in a number
+*       and you just put in something totally wrong, it would still give you the
+*       first element of the array
 * Gotchas:
 *   1) What if <number> is negative?
 *   2) What if <number> is greater than <array>.length?
@@ -77,11 +81,11 @@ _.first = function(array, n){
     if (!Array.isArray(array)) return [];
     if (n === undefined) return array[0];
     if (n < 0) return [];
-    if (n >0){
+    if (n > 0){
         n = n > array.length ? array.length : n;
         return array.slice(0, n);
-    }
-}
+        }
+};
 
 /** _.last()
 * Arguments:
@@ -97,21 +101,30 @@ _.first = function(array, n){
 * Examples:
 *   _.last(["a","b","c"], 2) -> ["b","c"]
 *   _.last(["a", "b", "c"], "ponies") -> ["a","b","c"]
+*   _.last(["Peggy", "Sherri", "Rick", "Rhonda", "Dan"], 2) --> ["Rhonda,""Dan"]
 */
 
 _.last = function(array, n){
-    if(!Array.isArray(array)) return [];
-    if(n === undefined ) return array.pop();
-    if(n < 0) return [];
-    if(array.length > n > 0) return array.slice(-2);
-    if(n >= array.length) return array; 
-    
+    if (!Array.isArray(array)) return [];
+    if (n === undefined) return array[array.length-1];
+    if (n < 0) return [];
+    if (n > 0){
+        n = n > array.length ? array.length : n;
+        return array.slice(-n);
+        }
 };
 
 /** _.each()
+* This is the Whopper of this project, because it is the cornerstone of abstracting
+* functions, in that it gives us a way to pass functions into other functions. 
+* The way we are using it in this project, _.each will allow us to pass each
+* element of an array or object into the generic funciton. We can therefore 
+* create functions that can manipulate the results of functions we pass into them.
+* 
 * Arguments:
 *   1) A collection
 *   2) A function
+* 
 * Objectives:
 *   1) if <collection> is an array, call <function> once for each element
 *      with the arguments: 
@@ -137,13 +150,22 @@ _.each = function(collection, action) {
 };
 
 /** _.indexOf()
+* While the name is pretty self-explanatory, this function allows us to find the
+* index of the FIRST instance of the value within the array. This function 
+* is deceptively simple. All you have to do is run a for loop, and say 'when the 
+* 'i'th value being looped equals the value we put in, stop the function a give
+* us the index of where this value was.' Because 'return' automatically stops
+* the loops, this is very simple!
+*
 * Arguments:
 *   1) An array
 *   2) A value
+* 
 * Objectives:
 *   1) Return the index of <array> that is the first occurrance of <value>
 *   2) Return -1 if <value> is not in <array>
 *   3) Do not use [].indexOf()!
+* 
 * Gotchas:
 *   1) What if <array> has multiple occurances of val?
 *   2) What if <val> isn't in <array>?
@@ -178,7 +200,7 @@ _.indexOf = function(array, value){
 */
 
 /* What does filter do?
-@param {Array or Object} 'collection': An Array or Object whose values will be filter.
+@param {Array or Object} 'collection': An Array or Object whose values will be filtered.
 @param {Function} 'test': a function that takes the value, position, and collection
 of each value in the collection, and returns true if the value passes some test, 
 or returns false otherwise.
@@ -351,10 +373,6 @@ _.contains = function(collection, value){
 *   _.every([1,2,3], function(e){return e % 2 === 0}) -> false
 */
 
-_.every = function (collection, action){
-    return _.indexOf(collection, action) === -1 ? false : true;
-};
-
 
 /** _.some()
 * Arguments:
@@ -377,6 +395,9 @@ _.every = function (collection, action){
 *   _.some([1,2,3], function(e){return e % 2 === 0}) -> true
 */
 
+_.some = function (collection, actiion){
+    
+};
 
 /** _.reduce()
 * Arguments:
@@ -397,6 +418,19 @@ _.every = function (collection, action){
 *   _.reduce([1,2,3], function(prev, curr){ return prev + curr}) -> 6
 */
 
+_.reduce = function(collection, iterator, accumulator) {
+
+    // add condition to set accumulator if no explicit starting value is given.
+    if (collection.length < 3) {
+      accumulator = collection[0];
+    }
+
+    _.each(collection, function(value) {
+      accumulator = iterator(accumulator, value);
+    });
+
+    return accumulator;
+  };
 
 /** _.extend()
 * Arguments:
